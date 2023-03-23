@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import PostAuthor from './PostAuthor';
 import { selectAllPosts } from './postSlice';
+import TimeAgo from './TimeAgo';
 
 
 const PostsList = () => {
@@ -10,7 +11,9 @@ const PostsList = () => {
         selectAllPosts
     );
 
-    const renderedPosts = posts.map(post=>(
+    const orderedPosts = posts.slice().sort((a,b)=> b.date.localeCompare(a.date));
+
+    const renderedPosts = orderedPosts.map(post=>(
         <article key={post.id}>
             <h3>
                 {post.title}
@@ -20,6 +23,7 @@ const PostsList = () => {
             </p>
             <p className='postCredit'>
                 <PostAuthor userID = {post.userID}/>
+                <TimeAgo timestamp={post.date}/>
             </p>
         </article>
     ));
