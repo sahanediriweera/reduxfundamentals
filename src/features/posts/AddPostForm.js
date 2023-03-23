@@ -19,13 +19,21 @@ const AddPostForm = () => {
     const onAuthorChanged = e=> setUserID(e.target.value);
 
     const onSavedPostClicked = () => {
-        if(title && content){
-            dispatch(
-                addNewPost(title,content,userID)
-            )
-            setContent('');
-            setTitle('');
+        if (canSave) {
+            try {
+                setAddRequestStatus('pending')
+                dispatch(addNewPost({ title, body: content, userID })).unwrap()
+
+                setTitle('')
+                setContent('')
+                setUserID('')
+            } catch (err) {
+                console.error('Failed to save the post', err)
+            } finally {
+                setAddRequestStatus('idle')
+            }
         }
+
     }
 
     const canSave = [title,content,userID].every(Boolean) && addRequestStatus === 'idle';
